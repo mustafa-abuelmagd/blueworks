@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClockInRequest;
+use App\Http\Resources\ClockInResource;
 use App\Models\ClockIn;
 use App\Models\Worker;
 use Illuminate\Http\Request;
@@ -95,6 +96,41 @@ class ClockInController extends Controller
      * @return \Illuminate\Http\JsonResponse with status 200 of Ok or 404 if no worker with provided Id.
      * @throws Some_Exception_Class If something interesting cannot happen
      */
+
+    /**
+     * @OA\Get(
+     *     path="/api/worker/clock-ins",
+     *     summary="Get clock-ins for a worker",
+     *     description="Retrieve the clock-ins for the specified worker",
+     *     operationId="getClockIns",
+     *     tags={"Clock-ins"},
+     *     @OA\Parameter(
+     *         name="worker_id",
+     *         in="query",
+     *         description="ID of the worker",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of clock-ins",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/ClockInResource")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Worker not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Worker not found")
+     *         )
+     *     ),
+     * )
+     */
     public function getClockIns(Request $request)
     {
         // Validate the request data
@@ -106,7 +142,7 @@ class ClockInController extends Controller
         // Retrieve the clock-ins for the specified worker
         $clockIns = ClockIn::where('worker_id', $worker->id)->get();
 
-        return response()->json($clockIns);
+        return ClockInResource::make($clockIns);
     }
 
     /**

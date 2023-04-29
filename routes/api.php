@@ -18,19 +18,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('worker')->group(function () {
-    /**
-     * @OA\Get(
-     *     path="/api/worker/clock-in",
-     *     summary="clock-in a worker",
-     *     @OA\Response(
-     *         response="200",
-     *         description="successful clocking in",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/User"))
-     *     ),
-     *     @OA\Response(response="400", description="Bad request"),
-     *     security={{"bearerAuth": {}}}
-     * )
-     */
     Route::post('clock-in', [ClockInController::class, 'clockIn']);
     Route::get('clock-ins', [ClockInController::class, 'getClockIns']);
 });

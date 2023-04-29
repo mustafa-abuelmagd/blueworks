@@ -64,6 +64,145 @@
                     }
                 ]
             }
+        },
+        "/api/worker/clock-ins": {
+            "get": {
+                "tags": [
+                    "Clock-ins"
+                ],
+                "summary": "Get clock-ins for a worker",
+                "description": "Retrieve the clock-ins for the specified worker",
+                "operationId": "getClockIns",
+                "parameters": [
+                    {
+                        "name": "worker_id",
+                        "in": "query",
+                        "description": "ID of the worker",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of clock-ins",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ClockInResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Worker not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Worker not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/worker": {
+            "get": {
+                "tags": [
+                    "Workers"
+                ],
+                "summary": "Get all workers",
+                "operationId": "bee72a43e2bbc4729128a4207f5110d2",
+                "responses": {
+                    "200": {
+                        "description": "List of all workers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/WorkerResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Workers"
+                ],
+                "summary": "Create a new worker",
+                "operationId": "1d18aaa8da03762c5835efaf1d1cd497",
+                "requestBody": {
+                    "description": "Worker data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Worker created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/WorkerResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -96,6 +235,70 @@
                     }
                 },
                 "type": "object"
+            },
+            "ClockInResource": {
+                "title": "WorkerResource",
+                "description": "Worker data",
+                "properties": {
+                    "id": {
+                        "description": "ID of the worker",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "Name of the worker",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "created_at": {
+                        "description": "Date and time when the record was created",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-28 15:00:00"
+                    },
+                    "updated_at": {
+                        "description": "Date and time when the record was last updated",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-28 15:01:00"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "WorkerResource"
+                }
+            },
+            "WorkerResource": {
+                "title": "WorkerResource",
+                "description": "Worker data",
+                "properties": {
+                    "id": {
+                        "description": "ID of the worker",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "description": "Name of the worker",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "created_at": {
+                        "description": "Date and time when the record was created",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-28 15:00:00"
+                    },
+                    "updated_at": {
+                        "description": "Date and time when the record was last updated",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-28 15:01:00"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "WorkerResource"
+                }
             }
         }
     }

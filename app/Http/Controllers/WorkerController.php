@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\WorkerRequest;
+use App\Http\Resources\WorkerResource;
 use App\Models\Worker;
 use Illuminate\Http\Request;
 
@@ -11,14 +12,30 @@ class WorkerController extends Controller
     /**
      * Display a listing of the resource.
      */
+    /**
+     * @OA\Get(
+     *     path="/api/worker",
+     *     summary="Get all workers",
+     *     tags={"Workers"},
+     *     @OA\Response(
+     *         response="200",
+     *         description="List of all workers",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/WorkerResource")
+     *         )
+     *     )
+     * )
+     *
+     * Display a listing of the resource.
+     *
+     * @return WorkerResource
+     */
     public function index()
     {
         $workers = Worker::all();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $workers
-        ]);
+        return WorkerResource::make($workers);
     }
 
     /**
@@ -32,54 +49,52 @@ class WorkerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    /**
+     * @OA\Post(
+     *     path="/api/worker",
+     *     summary="Create a new worker",
+     *     tags={"Workers"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Worker data",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="201",
+     *         description="Worker created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 ref="#/components/schemas/WorkerResource"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="422",
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     *
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return WorkerResource
+     */
     public function store(Request $request)
     {
         $worker = new Worker();
         $worker->name = $request->input('name');
         $worker->save();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $worker
-        ], 201);
-    }
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $worker = Worker::findOrFail($id);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $worker
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return WorkerResource::make($worker);
     }
 
 
-    /** * Remove the specified resource from storage.
-     *
-     * @param WorkerRequest $request
-     *
-     * @throws Some_Exception_Class If something interesting cannot happen
-     * @return \Illuminate\Http\JsonResponse with status 200 of Ok or 404 if no worker with provided Id.
-     */
-    public function destroy($id)
-    {
-        $worker = Worker::findOrFail($id);
-        $worker->delete();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Worker deleted successfully'
-        ]);
-    }
 }
