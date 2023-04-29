@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ClockInController;
+use App\Http\Controllers\WorkerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,38 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::prefix('worker')->group(function () {
+    /**
+     * @OA\Get(
+     *     path="/api/worker/clock-in",
+     *     summary="clock-in a worker",
+     *     @OA\Response(
+     *         response="200",
+     *         description="successful clocking in",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/User"))
+     *     ),
+     *     @OA\Response(response="400", description="Bad request"),
+     *     security={{"bearerAuth": {}}}
+     * )
+     */
+    Route::post('clock-in', [ClockInController::class, 'clockIn']);
+    Route::get('clock-ins', [ClockInController::class, 'getClockIns']);
 });
+
+Route::prefix('clockin')->group(function () {
+    Route::get('', [ClockInController::class, 'index']);
+    Route::get('{id}', [ClockInController::class, 'show']);
+    Route::post('', [ClockInController::class, 'store']);
+    Route::put('{id}', [ClockInController::class, 'update']);
+    Route::delete('{id}', [ClockInController::class, 'delete']);
+});
+
+Route::prefix('worker')->group(function () {
+    Route::get('', [WorkerController::class, 'index']);
+    Route::get('{id}', [WorkerController::class, 'show']);
+    Route::post('', [WorkerController::class, 'store']);
+    Route::put('{id}', [WorkerController::class, 'update']);
+    Route::delete('{id}', [WorkerController::class, 'delete']);
+});
+
