@@ -1,0 +1,102 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Clock In API",
+        "description": "API documentation for the Clock In app",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/worker/clock-in": {
+            "post": {
+                "tags": [
+                    "Clock-in"
+                ],
+                "summary": "Clock-in a worker",
+                "description": "Clock-in a worker at the specified location",
+                "operationId": "clockIn",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClockInRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Worker has successfully clocked in."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Worker is not within 2km of the specified location."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ClockInRequest": {
+                "title": "ClockInRequest",
+                "description": "ClockIn request body data",
+                "required": [
+                    "worker_id",
+                    "timestamp",
+                    "latitude",
+                    "longitude"
+                ],
+                "properties": {
+                    "worker_id": {
+                        "description": "ID of the worker who is clocking in",
+                        "type": "integer"
+                    },
+                    "timestamp": {
+                        "description": "Unix timestamp when the worker clocked in",
+                        "type": "integer"
+                    },
+                    "latitude": {
+                        "description": "Latitude of the location where the worker is clocking in",
+                        "type": "string"
+                    },
+                    "longitude": {
+                        "description": "Longitude of the location where the worker is clocking in",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

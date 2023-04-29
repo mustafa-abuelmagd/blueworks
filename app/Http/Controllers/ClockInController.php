@@ -19,6 +19,55 @@ class ClockInController extends Controller
      * @return \Illuminate\Http\JsonResponse with status 200 of Ok or 422 otherwise
      * @throws Some_Exception_Class If something interesting cannot happen
      */
+
+
+    /**
+     * @OA\Info(
+     * version="1.0.0",
+     * title="Clock In API",
+     * description="API documentation for the Clock In app",
+     * )
+     * @OA\Post(
+     *      path="/api/worker/clock-in",
+     *      summary="Clock-in a worker",
+     *      description="Clock-in a worker at the specified location",
+     *      operationId="clockIn",
+     *      tags={"Clock-in"},
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/ClockInRequest")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="Worker has successfully clocked in."
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Bad Request",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="error",
+     *                  type="string",
+     *                  example="Worker is not within 2km of the specified location."
+     *              )
+     *          )
+     *      ),
+     *      security={
+     *         {"bearerAuth": {}}
+     *      }
+     * )
+     *
+     * @param \App\Http\Requests\ClockInRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \InvalidArgumentException
+     */
     public function clockIn(ClockInRequest $request): \Illuminate\Http\JsonResponse
     {
         $workerLatitude = $request->input('latitude');
@@ -80,8 +129,8 @@ class ClockInController extends Controller
         $latDelta = $latTo - $latFrom;
         $lonDelta = $lonTo - $lonFrom;
 
-        $a = sin($latDelta/2) * sin($latDelta/2) + cos($latFrom)
-            * cos($locationLatitude) * sin($lonDelta/2) * sin($lonDelta/2);
+        $a = sin($latDelta / 2) * sin($latDelta / 2) + cos($latFrom)
+            * cos($locationLatitude) * sin($lonDelta / 2) * sin($lonDelta / 2);
 
         $c = 2 * asin(sqrt($a));
         $distance = $radiusOfEarth * $c;
